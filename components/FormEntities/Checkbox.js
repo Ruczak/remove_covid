@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
-import { View, StyleSheet, TouchableWithoutFeedback } from 'react-native';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
 
 const Checkbox = ({
   insideStyles,
@@ -17,11 +17,11 @@ const Checkbox = ({
   };
 
   return (
-    <TouchableWithoutFeedback onPress={() => handlePress(checked)}>
+    <TouchableOpacity onPress={() => handlePress(checked)}>
       <View style={[styles.outline, outsideStyles]}>
         {checked ? <View style={[styles.inside, insideStyles]} /> : null}
       </View>
-    </TouchableWithoutFeedback>
+    </TouchableOpacity>
   );
 };
 
