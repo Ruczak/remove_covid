@@ -8,6 +8,10 @@ export default function App() {
   const [locServiceEnabled, setLocServiceEnabled] = useState(false); // boolean
   const [pos, setPos] = useState({}); // { latitude: number, longitude: number }
   const [countryCode, setCountryCode] = useState(''); // string
+  const [countryPopulation, setCountryPopulation] = useState(0); // fetch (people)
+  const [countryDensity, setCountryDensity] = useState(0); // fetch (people/km^2)
+  const [covidCases, setCovidCases] = useState(0); // fetch (number)
+  const [todayCases, setTodayCases] = useState(0); // fetch (number)
 
   const checkIfLocationEnabled = async () => {
     let enabled = await Location.hasServicesEnabledAsync();
@@ -23,7 +27,7 @@ export default function App() {
   };
 
   const getCurrentLocation = async () => {
-    let { status } = Location.requestForegroundPermissionsAsync();
+    let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== 'granted') {
       Alert.alert(
         'Permission not granted',
@@ -62,14 +66,67 @@ export default function App() {
     return iso3code;
   };
 
+  const fetchInfo = async (code) => {
+    if (code === '') return;
+    try {
+      const responseCovid = await fetch(
+        `https://sedac.ciesin.columbia.edu/repository/covid19/json/${code}_admin0_covid_trend.json`
+      );
+      const responseCountry = await fetch(
+        `https://sedac.ciesin.columbia.edu/repository/covid19/json/${code}_admin0_age_distribution.json`
+      );
+
+      const covidData = await responseCovid.json();
+      const countryData = await responseCountry.json();
+
+      setCountryPopulation(
+        Math.ceil(
+          countryData.results[0].value.estimates[
+            'gpw-v4-basic-demographic-characteristics-rev10_atotpopbt-count'
+          ].SUM
+        )
+      );
+      setCountryDensity(
+        countryData.results[0].value.estimates[
+          'gpw-v4-population-density-adjusted-to-2015_2020'
+        ].MEAN
+      );
+
+      setTodayCases(covidData['cases'][covidData.cases.length - 2]);
+    } catch (err) {
+      throw err;
+    }
+  };
+
   useEffect(() => {
     checkIfLocationEnabled();
     getCurrentLocation();
   }, []);
 
+  useEffect(() => {
+    fetchInfo(countryCode);
+  }, [countryCode]);
+
+  useEffect(() => {
+    console.log('Population:', countryPopulation);
+  }, [countryPopulation]);
+
+  useEffect(() => {
+    console.log('Today cases:', todayCases);
+  }, [todayCases]);
+
   return (
     <View style={styles.container}>
-      <Text>Hello World!</Text>
+      <Text>Statistics</Text>
+      <Text>Country: {countryCode}</Text>
+      <Text>Country Population: {countryPopulation}</Text>
+      <Text>
+        Population Density:{' '}
+        {countryDensity === 'NoData'
+          ? 'Unknown'
+          : parseFloat(countryDensity).toFixed(2) + ' people / sq. kilometre'}
+      </Text>
+      <Text>Latest number of COVID cases: {todayCases}</Text>
       <StatusBar style="auto" />
     </View>
   );
