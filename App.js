@@ -31,7 +31,7 @@ export default function App() {
   // Gets current location coordinates
   const getCurrentLocation = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== 'granted') {
+    if (status !== 'granted' || locServiceEnabled) {
       Alert.alert(
         'Permission not granted',
         'Please allow the app to use the location service.',
@@ -97,6 +97,12 @@ export default function App() {
         ].MEAN
       );
 
+      setCovidCases(
+        covidData['cases'].reduce(
+          (total, currentVal) => total + (currentVal !== null ? currentVal : 0)
+        )
+      );
+
       setTodayCases(covidData['cases'][covidData.cases.length - 2]);
     } catch (err) {
       throw err;
@@ -123,6 +129,7 @@ export default function App() {
           ? 'Unknown'
           : parseFloat(countryDensity).toFixed(2) + ' people / sq. kilometre'}
       </Text>
+      <Text>Total number of COVID cases: {covidCases}</Text>
       <Text>Latest number of COVID cases: {todayCases}</Text>
       <CovidForm />
       <StatusBar style="auto" />
