@@ -31,4 +31,6 @@ export function calculateRisk(
 
   const riskFactor =
     (cases / population) * socialDistance * 1 * sexFactor * maskFactor;
+
+  return riskFactor
 }
