@@ -1,8 +1,9 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Alert } from 'react-native';
+import { StyleSheet, Text, View, Alert, SafeAreaView } from 'react-native';
 import * as Location from 'expo-location';
+import CovidForm from './components/CovidForm';
 
 export default function App() {
   const [locServiceEnabled, setLocServiceEnabled] = useState(false); // boolean
@@ -13,6 +14,7 @@ export default function App() {
   const [covidCases, setCovidCases] = useState(0); // fetch (number)
   const [todayCases, setTodayCases] = useState(0); // fetch (number)
 
+  // Checks if location is enabled, if not, it sends an alert
   const checkIfLocationEnabled = async () => {
     let enabled = await Location.hasServicesEnabledAsync();
 
@@ -26,6 +28,7 @@ export default function App() {
     } else setLocServiceEnabled(true);
   };
 
+  // Gets current location coordinates
   const getCurrentLocation = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== 'granted') {
@@ -50,6 +53,7 @@ export default function App() {
     }
   };
 
+  // Get country code and convert iso2 -> iso3
   const getCountryCode = async ({ latitude, longitude }) => {
     const props = await Location.reverseGeocodeAsync({
       latitude,
@@ -66,6 +70,7 @@ export default function App() {
     return iso3code;
   };
 
+  // Fetch data
   const fetchInfo = async (code) => {
     if (code === '') return;
     try {
@@ -107,16 +112,8 @@ export default function App() {
     fetchInfo(countryCode);
   }, [countryCode]);
 
-  useEffect(() => {
-    console.log('Population:', countryPopulation);
-  }, [countryPopulation]);
-
-  useEffect(() => {
-    console.log('Today cases:', todayCases);
-  }, [todayCases]);
-
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text>Statistics</Text>
       <Text>Country: {countryCode}</Text>
       <Text>Country Population: {countryPopulation}</Text>
@@ -127,8 +124,9 @@ export default function App() {
           : parseFloat(countryDensity).toFixed(2) + ' people / sq. kilometre'}
       </Text>
       <Text>Latest number of COVID cases: {todayCases}</Text>
+      <CovidForm />
       <StatusBar style="auto" />
-    </View>
+    </SafeAreaView>
   );
 }
 
