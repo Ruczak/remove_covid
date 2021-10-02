@@ -5,8 +5,9 @@ import { StyleSheet, Text, View, Alert } from 'react-native';
 import * as Location from 'expo-location';
 
 export default function App() {
-  const [locServiceEnabled, setLocServiceEnabled] = useState(false);
-  const [loc, setLoc] = useState(null);
+  const [locServiceEnabled, setLocServiceEnabled] = useState(false); // boolean
+  const [pos, setPos] = useState({}); // { latitude: number, longitude: number }
+  const [countryCode, setCountryCode] = useState(''); // string
 
   const checkIfLocationEnabled = async () => {
     let enabled = await Location.hasServicesEnabledAsync();
@@ -36,9 +37,29 @@ export default function App() {
 
     if (coords) {
       const { latitude, longitude } = coords;
-      setLoc({ latitude, longitude });
-      console.log(coords);
+
+      setPos({ latitude, longitude });
+
+      const code = await getCountryCode({ latitude, longitude });
+
+      setCountryCode(code);
     }
+  };
+
+  const getCountryCode = async ({ latitude, longitude }) => {
+    const props = await Location.reverseGeocodeAsync({
+      latitude,
+      longitude
+    });
+
+    const iso2code = props[0].isoCountryCode;
+
+    const response = await fetch('http://country.io/iso3.json');
+    const data = await response.json();
+
+    const iso3code = data[iso2code];
+
+    return iso3code;
   };
 
   useEffect(() => {
