@@ -1,16 +1,16 @@
-### REMOVE COVID
+# REMOVE COVID
 
 ## COVID risk assesment tool
 
-### Installation
+# Installation
 
-# Requirements
+### Requirements
 
 - Node.js version 14.15.4 or higher
 - 'Expo Go' app for IOS or 'Expo' app for Android
 - Run all the scripts while on administrator profile
 
-# Installation
+### Installation
 
 - Open command line (cmd.exe, powershell, git-bash).
 - Type `npm install -g expo-cli`.
