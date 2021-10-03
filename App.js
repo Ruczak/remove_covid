@@ -12,6 +12,7 @@ import CovidForm from './components/CovidForm';
 import Debug from './components/Debug';
 import { calculateRisk } from './logic/CalculateRisk';
 import Outcome from './components/Outcome';
+import TopBar from './components/TopBar';
 
 export default function App() {
   const [locServiceEnabled, setLocServiceEnabled] = useState(false); // boolean
@@ -183,8 +184,10 @@ export default function App() {
 
   return (
     <React.Fragment>
-      <StatusBar />
+      <StatusBar barStyle={'dark-content'} />
+
       <SafeAreaView style={styles.container}>
+        <TopBar />
         {/* <Debug
           tag={countryCode}
           population={countryPopulation}
