@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React from 'react';
 import { StyleSheet, View, Text, Animated } from 'react-native';
 import { withAnchorPoint } from 'react-native-anchor-point';
 
@@ -9,8 +9,23 @@ const Gauge = ({ risk }) => {
     <View style={styles.container}>
       <View style={styles.gauge}>
         <View
-          style={[styles.pointer, getRotation(`${rotationFactor + 180}deg`)]}
+          style={[
+            styles.pointer,
+            getRotation(`${risk <= 100 ? rotationFactor + 180 : 0}deg`)
+          ]}
         ></View>
+        {risk > 100 ? (
+          <View
+            style={[
+              styles.pointer,
+              getRotation(`${(rotationFactor % 180) + 180}deg`),
+              {
+                zIndex: 3,
+                backgroundColor: '#ff7712'
+              }
+            ]}
+          ></View>
+        ) : null}
       </View>
       <View style={styles.shield}></View>
     </View>
@@ -49,7 +64,9 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: '#007AFF',
     borderTopLeftRadius: 100,
-    borderTopRightRadius: 100
+    borderTopRightRadius: 100,
+    zIndex: 2,
+    position: 'absolute'
   },
   shield: {
     position: 'absolute',
