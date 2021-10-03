@@ -7,7 +7,7 @@
 ### Requirements
 
 - Node.js version 14.15.4 or higher
-- 'Expo Go' app for IOS or 'Expo' app for Android
+- 'Expo Go' app for iOS or 'Expo' app for Android
 - Run all the scripts while on administrator profile
 
 ### Installation
@@ -21,6 +21,6 @@
 - If
   - you're on Android device:
     - Press on 'Scan QR Code' and scan the QR code in the opened browser tab.
-  - you're on Apple (IOS) device:
+  - you're on Apple (iOS) device:
     - Use camera to scan the QR code and click on the pop-up occuring at the top.
 - Now you should see the app.
