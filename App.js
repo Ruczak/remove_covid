@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Alert, SafeAreaView } from 'react-native';
 import * as Location from 'expo-location';
 import CovidForm from './components/CovidForm';
+import Debug from './components/Debug';
 
 export default function App() {
   const [locServiceEnabled, setLocServiceEnabled] = useState(false); // boolean
@@ -13,6 +14,8 @@ export default function App() {
   const [countryDensity, setCountryDensity] = useState(0); // fetch (people/km^2)
   const [covidCases, setCovidCases] = useState(0); // fetch (number)
   const [todayCases, setTodayCases] = useState(0); // fetch (number)
+  const [currentCovicCases, setCurrentCovidCases] = useState(0); // fetch (number)
+  const [loaded, setLoaded] = useState(false);
 
   // Checks if location is enabled, if not, it sends an alert
   const checkIfLocationEnabled = async () => {
@@ -104,6 +107,13 @@ export default function App() {
       );
 
       setTodayCases(covidData['cases'][covidData.cases.length - 2]);
+
+      setCurrentCovidCases(
+        covidData['cases']
+          .slice((start = -16), (end = -2))
+          .reduce((total, current) => total + current)
+      );
+      setLoaded(true);
     } catch (err) {
       throw err;
     }
@@ -120,19 +130,16 @@ export default function App() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text>Statistics</Text>
-      <Text>Country: {countryCode}</Text>
-      <Text>Country Population: {countryPopulation}</Text>
-      <Text>
-        Population Density:{' '}
-        {countryDensity === 'NoData'
-          ? 'Unknown'
-          : parseFloat(countryDensity).toFixed(2) + ' people / sq. kilometre'}
-      </Text>
-      <Text>Total number of COVID cases: {covidCases}</Text>
-      <Text>Latest number of COVID cases: {todayCases}</Text>
+      <Debug
+        tag={countryCode}
+        population={countryPopulation}
+        density={countryDensity}
+        totalCases={covidCases}
+        latestCases={todayCases}
+        acitveCases={currentCovicCases}
+        loaded={loaded}
+      />
       <CovidForm />
-      <StatusBar style="auto" />
     </SafeAreaView>
   );
 }
