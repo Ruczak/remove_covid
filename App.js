@@ -117,7 +117,8 @@ export default function App() {
           didWearMask,
           houseMembers,
           covidMember,
-          useDisinfecting
+          useDisinfecting,
+          contactFreq
         ) * 100
       );
     } else {
@@ -169,7 +170,10 @@ export default function App() {
       );
       setLoaded(true);
     } catch (err) {
-      throw err;
+      Alert.alert('Network Error', 'Sorry, there was an network error.', 'OK', {
+        cancelable: false
+      });
+      console.log(err);
     }
   };
 
