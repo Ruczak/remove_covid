@@ -1,5 +1,5 @@
 export function calculateRisk(
-  cases,
+  currentCases,
   population,
   sex,
   socialDistance,
@@ -30,7 +30,15 @@ export function calculateRisk(
   const sanitizerFactor = sanitizer ? 0.95 : 1.1;
 
   const riskFactor =
-    (cases / population) * socialDistance * 1 * sexFactor * maskFactor;
+    (currentCases / population) *
+    socialDistanceFactor *
+    sexFactor *
+    maskFactor *
+    cityFactor *
+    infectedContactFactor *
+    houseMembersFactor *
+    sickHouseMemberFactor *
+    sanitizerFactor;
 
-  return riskFactor
+  return riskFactor;
 }
