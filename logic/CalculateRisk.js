@@ -92,7 +92,8 @@ export function calculateRisk(
     houseMembersFactor +
     sickHouseMemberFactor +
     sanitizerFactor +
-    contactFreqFactor;
+    contactFreqFactor +
+    seasonFactor;
 
   return riskFactor;
 }
