@@ -11,7 +11,7 @@ export function calculateRisk(
   sickHouseMember,
   sanitizer
 ) {
-  const sexFactor = sex ? 0.95 : 1.05; // sex => {0: male 1: female}
+  const sexFactor = sex === 0 ? 0.95 : 1.05; // sex => {0: male 1: female}
   const socialDistanceFactor =
     socialDistance === 0 ? 0.75 : socialDistance === 1 ? 0.5 : 1.25; // socialDistance ?
   const maskFactor = mask === 0 ? 0.95 : mask === 1 ? 0.98 : 1.1; // mask => {0: certified, 1: uncertified, 2: no}
