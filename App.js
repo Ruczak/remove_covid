@@ -15,7 +15,7 @@ export default function App() {
   const [covidCases, setCovidCases] = useState(0); // fetch (number)
   const [todayCases, setTodayCases] = useState(0); // fetch (number)
   const [currentCovicCases, setCurrentCovidCases] = useState(0); // fetch (number)
-  const [loaded, setLoaded] = useState(false);
+  const [loaded, setLoaded] = useState(false); // boolean
 
   // Checks if location is enabled, if not, it sends an alert
   const checkIfLocationEnabled = async () => {
