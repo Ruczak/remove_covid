@@ -5,6 +5,7 @@ import { StyleSheet, Text, View, Alert, SafeAreaView } from 'react-native';
 import * as Location from 'expo-location';
 import CovidForm from './components/CovidForm';
 import Debug from './components/Debug';
+import { calculateRisk } from './logic/CalculateRisk';
 
 export default function App() {
   const [locServiceEnabled, setLocServiceEnabled] = useState(false); // boolean
@@ -16,6 +17,7 @@ export default function App() {
   const [todayCases, setTodayCases] = useState(0); // fetch (number)
   const [currentCovicCases, setCurrentCovidCases] = useState(0); // fetch (number)
   const [loaded, setLoaded] = useState(false); // boolean
+  const [risk, setRisk] = useState(null); // number
 
   // Checks if location is enabled, if not, it sends an alert
   const checkIfLocationEnabled = async () => {
@@ -71,6 +73,17 @@ export default function App() {
     const iso3code = data[iso2code];
 
     return iso3code;
+  };
+
+  const handleSubmit = (sex, usesMask, useDisinfecting, houseMembers) => {
+    if (loaded) {
+      console.log(sex, usesMask, useDisinfecting, houseMembers);
+      // setRisk(calculateRisk(currentCovicCases, countryPopulation, sex, null, usesMask, null, null, null, houseMembers, null, useDisinfecting));
+    } else {
+      Alert.alert('Wait', 'Geolocation data is loading.', [{ text: 'OK' }], {
+        cancelable: false
+      });
+    }
   };
 
   // Fetch data
@@ -139,7 +152,7 @@ export default function App() {
         acitveCases={currentCovicCases}
         loaded={loaded}
       />
-      <CovidForm />
+      <CovidForm handleSubmit={handleSubmit} />
     </SafeAreaView>
   );
 }
