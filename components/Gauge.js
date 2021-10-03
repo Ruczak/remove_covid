@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     bottom: '-70%',
     left: '40%',
-    transform: [{ translateX: '-50%' }],
+    transform: [{ translateX: -50 }],
     zIndex: 3
   }
 });
