@@ -5,11 +5,19 @@ import SelectDropdown from 'react-native-select-dropdown';
 import Checkbox from './FormEntities/Checkbox';
 import SubmitButton from './FormEntities/SubmitButton';
 
-function CovidForm() {
-  const [usesMask, setUsesMask] = useState(false);
-  const [useDisinfecting, setUsesDisinfecting] = useState(false);
-  const [houseMembers, setHouseMembers] = useState(0);
+function CovidForm({ children, handleSubmit }) {
   const [sex, setSex] = useState(0);
+  const [houseMembers, setHouseMembers] = useState(0);
+  const [socialDistance, setSocialDistance] = useState(0);
+  const [usesMask, setUsesMask] = useState(0);
+  const [contactFreq, setContactFreq] = useState(0);
+
+  const [infectedContact, setInfectedContact] = useState(false);
+  const [didWearMask, setDidWearMask] = useState(0);
+
+  const [useDisinfecting, setUsesDisinfecting] = useState(false);
+  const [bigCity, setBigCity] = useState(false);
+  const [covidMember, setCovidMember] = useState(false);
 
   return (
     <ScrollView style={styles.formContainer}>
@@ -21,24 +29,8 @@ function CovidForm() {
           buttonStyle={styles.selectDropdown}
           rowStyle={styles.optionDropdown}
           dropdownStyle={styles.dropdownDropdown}
-          defaultValueByIndex={0}
+          defaultValueByIndex={sex}
         />
-      </View>
-      <View style={styles.rowContainer}>
-        <Checkbox
-          initial={usesMask}
-          callback={(val) => setUsesMask(val)}
-          outsideStyles={{ marginLeft: 10, marginRight: 10 }}
-        />
-        <Text>I wear a mask</Text>
-      </View>
-      <View style={styles.rowContainer}>
-        <Checkbox
-          initial={useDisinfecting}
-          callback={(val) => setUsesDisinfecting(val)}
-          outsideStyles={{ marginLeft: 10, marginRight: 10 }}
-        />
-        <Text>I use disinfecting agents</Text>
       </View>
       <View style={styles.rowContainer}>
         <View>
@@ -52,22 +44,151 @@ function CovidForm() {
           buttonStyle={styles.selectDropdown}
           rowStyle={styles.optionDropdown}
           dropdownStyle={styles.dropdownDropdown}
-          defaultValueByIndex={0}
+          defaultValueByIndex={houseMembers}
         />
       </View>
+
+      <View style={styles.rowContainer}>
+        <View>
+          <Text>How much of social </Text>
+          <Text>distance do you keep?</Text>
+        </View>
+        <SelectDropdown
+          data={[
+            `${String.fromCharCode(8805)}1 meters`,
+            `${String.fromCharCode(8805)}2 meters`,
+            'None'
+          ]}
+          onSelect={(selected, index) => setSocialDistance(index)}
+          buttonStyle={styles.selectDropdown}
+          rowStyle={styles.optionDropdown}
+          dropdownStyle={styles.dropdownDropdown}
+          defaultValueByIndex={socialDistance}
+        />
+      </View>
+
+      <View style={styles.rowContainer}>
+        <View>
+          <Text>Do u wear a </Text>
+          <Text>mask in public?</Text>
+        </View>
+        <SelectDropdown
+          data={['Yes (certified)', 'Yes', 'No']}
+          onSelect={(selected, index) => setUsesMask(index)}
+          buttonStyle={styles.selectDropdown}
+          rowStyle={styles.optionDropdown}
+          dropdownStyle={styles.dropdownDropdown}
+          defaultValueByIndex={usesMask}
+        />
+      </View>
+
+      <View style={styles.rowContainer}>
+        <View>
+          <Text>How often do you</Text>
+          <Text>meet other people?</Text>
+        </View>
+        <SelectDropdown
+          data={[
+            'Hardly ever',
+            'Once a week',
+            '2-3 times a week',
+            `${String.fromCharCode(8805)}4 times a week`
+          ]}
+          onSelect={(selected, index) => setContactFreq(index)}
+          buttonStyle={styles.selectDropdown}
+          rowStyle={styles.optionDropdown}
+          dropdownStyle={styles.dropdownDropdown}
+          defaultValueByIndex={contactFreq}
+        />
+      </View>
+
+      <View style={styles.rowContainer}>
+        <Text>
+          Have you had a contact with anyone infected with COVID lately?
+        </Text>
+      </View>
+
+      <View style={[styles.rowContainer, { marginTop: 0, marginBottom: 5 }]}>
+        <Checkbox
+          initial={infectedContact}
+          callback={(val) => setInfectedContact(val)}
+          outsideStyles={{
+            marginLeft: 10,
+            marginRight: 10
+          }}
+        />
+        <Text>Yes</Text>
+
+        <SelectDropdown
+          data={['They had a mask', "They didn't had a mask"]}
+          onSelect={(selected, index) => setDidWearMask(index === 0)}
+          buttonStyle={[
+            styles.selectDropdown,
+            { opacity: !infectedContact ? 0.3 : 1 },
+            { width: '70%' }
+          ]}
+          rowStyle={styles.optionDropdown}
+          dropdownStyle={styles.dropdownDropdown}
+          defaultValueByIndex={didWearMask}
+          disabled={!infectedContact}
+        />
+      </View>
+
+      <View style={styles.rowContainer}>
+        <Checkbox
+          initial={covidMember}
+          callback={(val) => setCovidMember(val)}
+          outsideStyles={{ marginLeft: 10, marginRight: 10 }}
+        />
+        <Text>I have a sick household member</Text>
+      </View>
+
+      <View style={styles.rowContainer}>
+        <Checkbox
+          initial={bigCity}
+          callback={(val) => setBigCity(val)}
+          outsideStyles={{ marginLeft: 10, marginRight: 10 }}
+        />
+        <View>
+          <Text>I live in a big city (min. 1 million residents)</Text>
+        </View>
+      </View>
+      <View style={styles.rowContainer}>
+        <Checkbox
+          initial={useDisinfecting}
+          callback={(val) => setUsesDisinfecting(val)}
+          outsideStyles={{ marginLeft: 10, marginRight: 10 }}
+        />
+        <Text>I use disinfecting agents (min. 3 times a day)</Text>
+      </View>
+
       <SubmitButton
         borderStyles={styles.button}
-        onClick={() => console.log('clicked!')}
+        onClick={() =>
+          handleSubmit(
+            sex,
+            houseMembers,
+            socialDistance,
+            usesMask,
+            contactFreq,
+            { infectedContact, didWearMask },
+            useDisinfecting,
+            bigCity,
+            covidMember
+          )
+        }
       >
         Submit
       </SubmitButton>
+      {children}
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   formContainer: {
-    padding: 15
+    paddingHorizontal: 15,
+    marginBottom: 20
   },
   rowContainer: {
     flex: 1,
@@ -75,7 +196,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     textAlign: 'left',
     alignItems: 'center',
-    marginTop: 10
+    marginTop: 20
   },
   selectDropdown: {
     borderRadius: 18,

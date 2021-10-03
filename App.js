@@ -81,10 +81,44 @@ export default function App() {
     return iso3code;
   };
 
-  const handleSubmit = (sex, usesMask, useDisinfecting, houseMembers) => {
+  const handleSubmit = (
+    sex,
+    houseMembers,
+    socialDistance,
+    usesMask,
+    contactFreq,
+    { infectedContact, didWearMask },
+    useDisinfecting,
+    bigCity,
+    covidMember
+  ) => {
     if (loaded) {
-      console.log(sex, usesMask, useDisinfecting, houseMembers);
-      // setRisk(calculateRisk(currentCovicCases, countryPopulation, sex, null, usesMask, null, null, null, houseMembers, null, useDisinfecting));
+      // console.log(
+      //   sex,
+      //   houseMembers,
+      //   socialDistance,
+      //   usesMask,
+      //   contactFreq,
+      //   { infectedContact, didWearMask },
+      //   useDisinfecting,
+      //   bigCity,
+      //   covidMember
+      // );
+      setRisk(
+        calculateRisk(
+          currentCovicCases,
+          countryPopulation,
+          sex,
+          socialDistance,
+          usesMask,
+          bigCity,
+          infectedContact,
+          didWearMask,
+          houseMembers,
+          covidMember,
+          useDisinfecting
+        ) * 100
+      );
     } else {
       Alert.alert('Wait', 'Geolocation data is loading.', [{ text: 'OK' }], {
         cancelable: false
@@ -151,7 +185,7 @@ export default function App() {
     <React.Fragment>
       <StatusBar />
       <SafeAreaView style={styles.container}>
-        <Debug
+        {/* <Debug
           tag={countryCode}
           population={countryPopulation}
           density={countryDensity}
@@ -159,9 +193,10 @@ export default function App() {
           latestCases={todayCases}
           acitveCases={currentCovicCases}
           loaded={loaded}
-        />
-        <CovidForm handleSubmit={handleSubmit} />
-        <Outcome risk={50} />
+        /> */}
+        <CovidForm handleSubmit={handleSubmit}>
+          <Outcome risk={risk} style={{ marginTop: 20 }} />
+        </CovidForm>
       </SafeAreaView>
     </React.Fragment>
   );

@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import Gauge from './Gauge';
 
-const Outcome = ({ risk }) => {
+const Outcome = ({ risk, style }) => {
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, style]}>
       <Gauge risk={risk} />
       <Text style={styles.text}>
-        Your risk score score is: {risk} out of 100
+        Your risk score score is: {risk !== null ? risk.toFixed(2) : '-'} out of
+        100
       </Text>
     </View>
   );
@@ -23,7 +24,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 10,
     fontSize: 16,
-    fontWeight: '600'
+    fontWeight: '500'
   }
 });
 
