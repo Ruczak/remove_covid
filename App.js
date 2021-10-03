@@ -1,11 +1,17 @@
-import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Alert, SafeAreaView } from 'react-native';
+import {
+  StyleSheet,
+  Alert,
+  SafeAreaView,
+  Platform,
+  StatusBar
+} from 'react-native';
 import * as Location from 'expo-location';
 import CovidForm from './components/CovidForm';
 import Debug from './components/Debug';
 import { calculateRisk } from './logic/CalculateRisk';
+import Outcome from './components/Outcome';
 
 export default function App() {
   const [locServiceEnabled, setLocServiceEnabled] = useState(false); // boolean
@@ -142,18 +148,22 @@ export default function App() {
   }, [countryCode]);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Debug
-        tag={countryCode}
-        population={countryPopulation}
-        density={countryDensity}
-        totalCases={covidCases}
-        latestCases={todayCases}
-        acitveCases={currentCovicCases}
-        loaded={loaded}
-      />
-      <CovidForm handleSubmit={handleSubmit} />
-    </SafeAreaView>
+    <React.Fragment>
+      <StatusBar />
+      <SafeAreaView style={styles.container}>
+        <Debug
+          tag={countryCode}
+          population={countryPopulation}
+          density={countryDensity}
+          totalCases={covidCases}
+          latestCases={todayCases}
+          acitveCases={currentCovicCases}
+          loaded={loaded}
+        />
+        <CovidForm handleSubmit={handleSubmit} />
+        <Outcome risk={50} />
+      </SafeAreaView>
+    </React.Fragment>
   );
 }
 
